@@ -1,158 +1,157 @@
 ﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Galerie PNG - Vue agrandie</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Galerie PNG – Vue agrandie</title>
   <style>
-    body {
-      font-family: "Segoe UI", Roboto, Arial, sans-serif;
-      background-color: #eee;
-      margin: 0;
-      padding: 0;
-    }
-    header {
-      background-color: #222;
-      color: white;
-      text-align: center;
-      padding: 1rem 0;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-    }
-    h1 {
-      margin: 0;
-      font-size: 2rem;
-    }
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-      padding: 30px;
-      justify-items: center;
-    }
-    .card {
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.15);
-      overflow: hidden;
-      transition: transform 0.25s ease, box-shadow 0.25s ease;
-      cursor: pointer;
-      width: 100%;
-      max-width: 400px;
-    }
-    .card:hover {
-      transform: scale(1.05);
-      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
-    }
-    .card img {
-      width: 100%;
-      height: auto;
-      display: block;
-      object-fit: contain;
-      background: #fafafa;
-    }
-    .card p {
-      text-align: center;
-      margin: 10px 0 15px;
-      font-size: 1rem;
-      color: #333;
-      word-break: break-all;
-    }
-    footer {
-      text-align: center;
-      padding: 15px;
-      color: #666;
-      font-size: 0.9rem;
-      background: #f5f5f5;
-      border-top: 1px solid #ddd;
-    }
+    body { font-family: "Segoe UI", Roboto, Arial, sans-serif; background-color: #eee; margin: 0; padding: 0; }
+    header { background-color: #222; color: white; text-align: center; padding: 1rem 0; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
+    h1 { margin: 0; font-size: 2rem; }
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; padding: 30px; justify-items: center; }
+    .card { background: white; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.15); overflow: hidden; transition: transform 0.25s ease, box-shadow 0.25s ease; cursor: pointer; width: 100%; max-width: 400px; }
+    .card:hover { transform: scale(1.03); box-shadow: 0 8px 16px rgba(0,0,0,0.25); }
+    .card img { width: 100%; height: auto; display: block; object-fit: contain; background: #fafafa; }
+    .card p { text-align: center; margin: 10px 0 15px; font-size: 1rem; color: #333; word-break: break-all; }
+    footer { text-align: center; padding: 15px; color: #666; font-size: 0.9rem; background: #f5f5f5; border-top: 1px solid #ddd; }
 
-    /* === Lightbox === */
-    .lightbox {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.8);
-      justify-content: center;
-      align-items: center;
-    }
-    .lightbox img {
-      max-width: 90%;
-      max-height: 90%;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(255,255,255,0.3);
-      animation: zoomIn 0.3s ease;
-    }
-    @keyframes zoomIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
-    }
-    .lightbox:target {
-      display: flex;
-    }
-    .close {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 2rem;
-      color: white;
-      text-decoration: none;
-      background: rgba(0,0,0,0.6);
-      padding: 5px 15px;
-      border-radius: 8px;
-    }
-    .close:hover {
-      background: rgba(255,255,255,0.2);
+    /* Lightbox overlay */
+    .lightbox { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+    .lightbox.visible { display: flex; }
+    .lightbox-content { position: relative; max-width: 95%; max-height: 95%; }
+    .lightbox img { display: block; max-width: 100%; max-height: 100%; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.6); animation: zoomIn 0.25s ease; }
+    @keyframes zoomIn { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .lightbox .close { position: absolute; top: -10px; right: -10px; background: #fff; color: #222; border-radius: 50%; width: 36px; height: 36px; display:flex; align-items:center; justify-content:center; font-size: 20px; text-decoration:none; box-shadow: 0 2px 8px rgba(0,0,0,0.3); cursor: pointer; }
+    .lightbox .nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 36px; color: rgba(255,255,255,0.9); text-decoration: none; padding: 8px 12px; cursor: pointer; user-select: none; }
+    .lightbox .nav.prev { left: 20px; }
+    .lightbox .nav.next { right: 20px; }
+
+    /* Small screens */
+    @media (max-width: 480px) {
+      .gallery { grid-template-columns: 1fr; padding: 12px; gap: 12px; }
+      .card { max-width: 100%; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>📸 Galerie PNG – Vue agrandie</h1>
-  </header>
+  <header><h1>📸 Galerie PNG – Vue agrandie</h1></header>
 
   <div class="gallery" id="gallery">
-    <p style="grid-column: 1 / -1; text-align:center; color:#777;">Chargement des images...</p>
+    <p style="grid-column:1/-1;text-align:center;color:#777">Chargement des images...</p>
   </div>
 
-  <footer>
-    Généré automatiquement depuis GitHub Pages © <span id="year"></span>
-  </footer>
+  <footer>Généré automatiquement depuis GitHub Pages © <span id="year"></span></footer>
+
+  <!-- Lightbox (unique, gérée par JS) -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <div class="lightbox-content" role="dialog" aria-modal="true">
+      <button class="close" id="lb-close" aria-label="Fermer">&times;</button>
+      <a class="nav prev" id="lb-prev" aria-label="Image précédente">&#10094;</a>
+      <img id="lb-image" src="" alt="">
+      <a class="nav next" id="lb-next" aria-label="Image suivante">&#10095;</a>
+    </div>
+  </div>
 
   <script>
     document.getElementById("year").textContent = new Date().getFullYear();
-    const repoPath = window.location.pathname.replace(/\/index.html$/, '');
-    const gallery = document.getElementById("gallery");
 
-    fetch(`https://api.github.com/repos/${window.location.hostname.split('.')[0]}/${repoPath.split('/')[1]}/contents/`)
-      .then(res => res.json())
-      .then(files => {
-        gallery.innerHTML = "";
-        files
-          .filter(f => f.name.toLowerCase().endsWith('.png'))
-          .forEach((f, i) => {
-            const card = document.createElement('div');
-            card.className = 'card';
+    // Configuration (si l'autodétection échoue, renseigne OWNER et REPO)
+    const CONFIG = {
+      OWNER: "", // ex: "TonPseudo" (laisser vide = autodétection)
+      REPO: ""   // ex: "png-gallery" (laisser vide = autodétection)
+    };
+
+    // Détection automatique owner/repo
+    const hostParts = window.location.hostname.split('.');
+    const ownerAuto = hostParts[0];
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    const repoAuto = pathParts.length > 0 ? pathParts[0] : "";
+
+    const owner = CONFIG.OWNER || ownerAuto;
+    const repo = CONFIG.REPO || repoAuto;
+
+    const gallery = document.getElementById("gallery");
+    const images = []; // tableau {name, url}
+
+    // Lightbox elements
+    const lb = document.getElementById("lightbox");
+    const lbImage = document.getElementById("lb-image");
+    const lbClose = document.getElementById("lb-close");
+    const lbPrev = document.getElementById("lb-prev");
+    const lbNext = document.getElementById("lb-next");
+    let currentIndex = 0;
+
+    function openLightbox(index) {
+      if (index < 0 || index >= images.length) return;
+      currentIndex = index;
+      lbImage.src = images[index].url;
+      lbImage.alt = images[index].name || "";
+      lb.classList.add("visible");
+      lb.setAttribute("aria-hidden", "false");
+      document.body.style.overflow = "hidden"; // empêche le scroll du body
+    }
+    function closeLightbox() {
+      lb.classList.remove("visible");
+      lb.setAttribute("aria-hidden", "true");
+      lbImage.src = "";
+      document.body.style.overflow = ""; 
+    }
+    function showPrev() { openLightbox((currentIndex - 1 + images.length) % images.length); }
+    function showNext() { openLightbox((currentIndex + 1) % images.length); }
+
+    // Events lightbox
+    lbClose.addEventListener("click", closeLightbox);
+    lbPrev.addEventListener("click", (e) => { e.stopPropagation(); showPrev(); });
+    lbNext.addEventListener("click", (e) => { e.stopPropagation(); showNext(); });
+    lb.addEventListener("click", (e) => {
+      if (e.target === lb) closeLightbox(); // clic hors de l'image ferme
+    });
+    document.addEventListener("keydown", (e) => {
+      if (!lb.classList.contains("visible")) return;
+      if (e.key === "Escape") closeLightbox();
+      if (e.key === "ArrowLeft") showPrev();
+      if (e.key === "ArrowRight") showNext();
+    });
+
+    // Récupération des images via API GitHub
+    // Si repo ou owner introuvable, on affiche message d'erreur
+    if (!owner || !repo) {
+      gallery.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:#999;'>⚠️ Impossible de détecter automatiquement le repo. Si nécessaire, renseigne OWNER et REPO dans le script.</p>";
+    } else {
+      const apiUrl = `https://api.github.com/repos/${owner}/${repo}/contents/`;
+      fetch(apiUrl)
+        .then(res => {
+          if (!res.ok) throw new Error("Réponse GitHub non OK: " + res.status);
+          return res.json();
+        })
+        .then(files => {
+          const pngFiles = files.filter(f => f.type === "file" && f.name.toLowerCase().endsWith(".png"));
+          if (pngFiles.length === 0) {
+            gallery.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:#777;'>Aucune image PNG trouvée dans ce dossier.</p>";
+            return;
+          }
+          gallery.innerHTML = "";
+          pngFiles.forEach((f, i) => {
+            images.push({ name: f.name, url: f.download_url });
+            const card = document.createElement("div");
+            card.className = "card";
             card.innerHTML = `
-              <a href="#img${i}">
-                <img src="${f.download_url}" alt="${f.name}">
-              </a>
+              <img src="${f.download_url}" alt="${f.name}" data-index="${i}">
               <p>${f.name}</p>
-              <div class="lightbox" id="img${i}">
-                <a href="#" class="close">&times;</a>
-                <img src="${f.download_url}" alt="${f.name}">
-              </div>
             `;
+            // clic sur l'image → ouvrir lightbox
+            card.querySelector("img").addEventListener("click", (ev) => {
+              const idx = Number(ev.currentTarget.dataset.index);
+              openLightbox(idx);
+            });
             gallery.appendChild(card);
           });
-      })
-      .catch(err => {
-        gallery.innerHTML = "<p style='text-align:center;color:#999;'>⚠️ Impossible de charger les images.</p>";
-        console.error(err);
-      });
+        })
+        .catch(err => {
+          console.error(err);
+          gallery.innerHTML = "<p style='grid-column:1/-1;text-align:center;color:#999;'>⚠️ Impossible de charger la liste des images (erreur API ou quota dépassé).</p>";
+        });
+    }
   </script>
 </body>
 </html>
