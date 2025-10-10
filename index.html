@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galerie PNG - GitHub Pages</title>
+  <style>
+    body {
+      font-family: "Segoe UI", Roboto, Arial, sans-serif;
+      background-color: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #24292e;
+      color: white;
+      text-align: center;
+      padding: 1rem 0;
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.8rem;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      padding: 20px;
+    }
+    .card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      overflow: hidden;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .card:hover {
+      transform: scale(1.03);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+    }
+    .card img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .card p {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 0.9rem;
+      color: #333;
+      word-break: break-all;
+    }
+    footer {
+      text-align: center;
+      padding: 10px;
+      color: #777;
+      font-size: 0.8rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📸 Galerie PNG GitHub Pages</h1>
+  </header>
+
+  <div class="gallery" id="gallery"></div>
+
+  <footer>
+    Généré automatiquement depuis GitHub Pages © <span id="year"></span>
+  </footer>
+
+  <script>
+    // Affiche l'année actuelle dans le footer
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    // 🔍 Récupère toutes les images PNG du repo (fonctionne sur GitHub Pages)
+    const repoPath = window.location.pathname.replace(/\/index.html$/, '');
+    const gallery = document.getElementById("gallery");
+
+    // Liste manuelle des images si tu veux (optionnel)
+    // const images = ["image1.png", "image2.png", "photo_test.png"];
+
+    // Sinon : récupération automatique (fallback simple via GitHub API)
+    fetch(`https://api.github.com/repos/${window.location.hostname.split('.')[0]}/${repoPath.split('/')[1]}/contents/`)
+      .then(res => res.json())
+      .then(files => {
+        files
+          .filter(f => f.name.toLowerCase().endsWith('.png'))
+          .forEach(f => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+              <img src="${f.download_url}" alt="${f.name}">
+              <p>${f.name}</p>
+            `;
+            gallery.appendChild(card);
+          });
+      })
+      .catch(err => {
+        gallery.innerHTML = "<p style='text-align:center;color:#999;'>⚠️ Impossible de charger la liste des images.</p>";
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
